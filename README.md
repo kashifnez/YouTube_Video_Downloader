@@ -35,7 +35,12 @@ Or
 ```
 pip install pytube
 pip install tk
+<<<<<<< HEAD
 X```
+=======
+
+```
+>>>>>>> a467e74aeafd0a24914b25e679d9159e02103cc8
 
 Step 3:
 ```
