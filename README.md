@@ -35,7 +35,7 @@ Or
 ```
 pip install pytube
 pip install tk
-pip install pillow
+
 ```
 
 Step 3:
