@@ -2,7 +2,6 @@ from pytube import YouTube
 from tkinter.filedialog import *
 from tkinter.messagebox import *
 from threading import *
-import PIL.Image
 
 vSize=0
 
@@ -10,12 +9,25 @@ vSize=0
 def paste():
 	cliptext = main.clipboard_get()
 	url_field.insert(0,cliptext)
+#clearing url
+def clear():
+	url_field.delete(0,'end')
 
+#ask location
+save=""
+def Vsave():
+	save=askdirectory()
+	if save is None:
+		save="/sdcard/Downloads"
+	VLoc.config(text=f"folder: {save}")
+	VLoc.pack(side=TOP, pady=5)
+	
 
 #threading
 def kashifThread():
 	kThread=Thread(target=YD)
 	kThread.start()
+	print ("save= ", save)
 	
 #download progress
 def progresss(chunk, file_handle, bytes_remaining):
@@ -48,27 +60,16 @@ def YD():
 		dBtn.config(text="Please Wait...")
 		dBtn.config(state=DISABLED)
 		cURL.pack_forget()
-		save=askdirectory()
-		print(save)
-		if save is None:
-			return
+	#	#save=askdirectory()
+#		print(save)
+#		if save is None:
+#			return
 		kash=YouTube(url, on_progress_callback=progresss)
 		
 		video=kash.streams.first()
 		vTitle.config(text=video.title)
 		vTitle.pack(side=TOP, pady=10)
 		vSize=video.filesize
-		
-		
-		
-	#	vs=(video.filesize)/(1024*1024)
-#		print("File Size:  {:.2f}".format((video.filesize)/(1024*1024)),"MB")
-#		
-#		fSize.config(text="{:00.2f} % MB".format(vs))
-#	
-		
-	
-#	fSize.pack(side=TOP, pady=5)
 		
 		#to save video
 		video.download(save)
@@ -80,7 +81,7 @@ def YD():
 		vTitle.pack_forget()
 		fSize.pack_forget()
 		fDSize.pack_forget()
-		
+		VLoc.pack_forget()
 		
 	except Exception as e:
 		print(e)
@@ -102,9 +103,9 @@ main.title("YouTube Downloader by Kashif")
 #main.iconbitmap('icon.ico)
 
 #mainicon
-file=PhotoImage(file='yi.png') 
-mainicon=Label(main,image=file)
-mainicon.pack(side=TOP, pady=50)
+file1=PhotoImage(file='yi.png') 
+mainicon=Label(main,image=file1)
+mainicon.pack(side=TOP)
 
 #text to say put url
 url_info=Label(main,text='Enter URL from YouTube', font='normal 10 bold underline',justify=CENTER)
@@ -116,17 +117,29 @@ url_field=Entry(main,font=("Square Sans Serif",18), justify=CENTER)
 url_field.pack(side=TOP,fill=X, padx=80)
 
 #button to paste
-
-pBtn=Button(main,text="Paste", font='calibri 5 bold',bg='violet',fg='blue',bd=20,relief=GROOVE, command=paste, justify=CENTER)
-pBtn.place(x=120,y=150)
+pBtn=Button(main,text="PASTE", font='calibri 5 bold italic',bg='violet',fg='blue',bd=2,relief=GROOVE, command=paste, justify=CENTER)
 pBtn.pack(pady=13)
+
+#button to clear clipboard
+clr=Button(main,text="CLEAR", font='calibri 5 bold',bg='black',fg='pink',bd=2,relief=GROOVE, command=clear, justify=CENTER)
+clr.pack(pady=13)
+
+
+#button to get directory to save video
+dBtn=Button(main,text="Choose Folder", font='calibri 8 bold',fg='blue',bg="yellow",relief=SUNKEN, command=Vsave, justify=CENTER)
+dBtn.pack(side=TOP, pady=5)
+
+
+
 
 
 #button to download
 
-dBtn=Button(main,text="Start Download", font='calibri 15 bold',bd=20,relief=RAISED, command=kashifThread, justify=CENTER)
+dBtn=Button(main,text="Start Download", font='calibri 10 bold',bd=12,bg="blue",fg="yellow",relief=RAISED, command=kashifThread, justify=CENTER)
 dBtn.pack(side=TOP, pady=20)
 
+#showing folder location
+VLoc=Label(main,text='')
 
 
 #creating File Size
@@ -147,12 +160,6 @@ footer.pack(side=BOTTOM,pady=10)
 
 #currect URL information cURL
 cURL=Label(main,text="Plz Enter correct URL", font='calibri 15 bold', fg='red')
-
-#picturebabu
-file=PhotoImage(file='pic.png') 
-file=file.subsample(3)
-babu=Label(main,image=file)
-babu.pack(side=BOTTOM, pady=50)
 
 main.geometry("600x700")
 main.mainloop()
